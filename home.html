@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Funko Tracker - La tua collezione Funko Pop</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap');
+
+  body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 99%, #fad0c4 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    color: #333;
+  }
+
+  header {
+    padding: 50px 20px 20px;
+    text-align: center;
+  }
+
+  header h1 {
+    font-size: 3rem;
+    margin-bottom: 10px;
+    color: #4b2e83;
+    text-shadow: 1px 1px 4px rgba(0,0,0,0.15);
+  }
+
+  header p {
+    font-size: 1.25rem;
+    color: #6a4a86;
+    margin-top: 0;
+  }
+
+  main {
+    display: flex;
+    gap: 25px;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 40px 20px 60px;
+    max-width: 900px;
+    width: 100%;
+  }
+
+  .btn {
+    background: #6a4a86;
+    color: white;
+    padding: 18px 36px;
+    border: none;
+    border-radius: 30px;
+    font-size: 1.25rem;
+    cursor: pointer;
+    box-shadow: 0 5px 15px rgba(106, 74, 134, 0.4);
+    transition: background 0.3s ease, transform 0.2s ease;
+    flex: 1 1 180px;
+    max-width: 220px;
+    text-align: center;
+    user-select: none;
+  }
+
+  .btn:hover {
+    background: #8547a3;
+    transform: scale(1.05);
+  }
+
+  /* Colori specifici per ogni bottone */
+  .btn.dragonball {
+    background: #f8b500;
+    box-shadow: 0 5px 15px rgba(248, 181, 0, 0.5);
+    color: #2a1a00;
+  }
+  .btn.dragonball:hover {
+    background: #f9c839;
+  }
+
+  .btn.onepiece {
+    background: #e94b3c;
+    box-shadow: 0 5px 15px rgba(233, 75, 60, 0.5);
+  }
+  .btn.onepiece:hover {
+    background: #f16358;
+  }
+
+  .btn.naruto {
+    background: #ff7f50;
+    box-shadow: 0 5px 15px rgba(255, 127, 80, 0.5);
+    color: #3e1a00;
+  }
+  .btn.naruto:hover {
+    background: #ff936a;
+  }
+
+  .btn.pokemon {
+    background: #3b82f6;
+    box-shadow: 0 5px 15px rgba(59, 130, 246, 0.5);
+  }
+  .btn.pokemon:hover {
+    background: #5a9dfb;
+  }
+
+  footer {
+    margin-top: auto;
+    padding: 20px;
+    font-size: 0.9rem;
+    color: #4b2e83;
+  }
+
+  @media (max-width: 480px) {
+    header h1 {
+      font-size: 2.2rem;
+    }
+    .btn {
+      flex: 1 1 100%;
+      max-width: none;
+    }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Funko Tracker</h1>
+  <p>Organizza e tieni traccia della tua collezione Funko Pop!</p>
+</header>
+
+<main>
+  <button class="btn dragonball" onclick="location.href='#dragonball'">Dragon Ball</button>
+  <button class="btn onepiece" onclick="location.href='#onepiece'">One Piece</button>
+  <button class="btn naruto" onclick="location.href='#naruto'">Naruto</button>
+  <button class="btn pokemon" onclick="location.href='#pokemon'">Pokémon</button>
+</main>
+
+<footer>
+  &copy; 2025 Funko Tracker - Tutti i diritti riservati
+</footer>
+
+</body>
+</html>

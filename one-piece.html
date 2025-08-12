@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>One Piece Funko Pop Tracker</title>
+<style>
+/* --- Stile base --- */
+*{margin:0;padding:0;box-sizing:border-box;}
+body{
+    font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+    background:linear-gradient(135deg,#1e90ff,#00bfff,#1e90ff);
+    min-height:100vh;
+    color:#333;
+}
+.container{max-width:1400px;margin:0 auto;padding:20px;}
+.header{text-align:center;background:rgba(255,255,255,0.95);padding:30px;border-radius:20px;margin-bottom:30px;box-shadow:0 10px 30px rgba(0,0,0,0.2);}
+.header h1{color:#1e90ff;font-size:2.5em;margin-bottom:10px;text-shadow:2px 2px 4px rgba(0,0,0,0.1);}
+.stats-bar{display:flex;justify-content:space-around;background:rgba(255,255,255,0.9);padding:20px;border-radius:15px;margin-bottom:30px;flex-wrap:wrap;gap:20px;}
+.stat-item{text-align:center;min-width:120px;}
+.stat-number{font-size:2em;font-weight:bold;color:#1e90ff;}
+.stat-label{color:#666;font-size:0.9em;}
+.controls{display:flex;gap:15px;margin-bottom:30px;flex-wrap:wrap;align-items:center;}
+.btn{padding:12px 24px;border:none;border-radius:10px;cursor:pointer;font-weight:bold;transition:all 0.3s ease;color:white;}
+.btn-secondary{background:linear-gradient(45deg,#4CAF50,#45a049);}
+.btn:hover{transform:translateY(-2px);box-shadow:0 5px 15px rgba(0,0,0,0.3);}
+.filter-group{display:flex;gap:10px;align-items:center;}
+select,input{padding:10px;border:2px solid #ddd;border-radius:8px;font-size:14px;}
+.funko-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(350px,1fr));gap:25px;margin-bottom:30px;}
+.funko-card{background:rgba(255,255,255,0.95);border-radius:15px;padding:20px;box-shadow:0 8px 25px rgba(0,0,0,0.1);transition:all 0.3s ease;border-left:5px solid #1e90ff;display:flex;flex-direction:column;}
+.funko-card:hover{transform:translateY(-5px);box-shadow:0 15px 35px rgba(0,0,0,0.2);}
+.funko-card.owned{border-left-color:#4CAF50;background:rgba(76,175,80,0.05);}
+.funko-card.wanted{border-left-color:#2196F3;background:rgba(33,150,243,0.05);}
+.funko-image{width:100%;height:200px;object-fit:cover;border-radius:10px;margin-bottom:15px;background:#f5f5f5;display:flex;align-items:center;justify-content:center;color:#999;font-size:0.9em;border:2px dashed #ddd;}
+.funko-image img{width:100%;height:100%;object-fit:contain;border-radius:10px;background-color:#fff;}
+.status-badge{display:inline-block;padding:4px 12px;border-radius:20px;font-size:0.8em;font-weight:bold;margin-bottom:10px;}
+.status-owned{background:#4CAF50;color:white;}
+.status-wanted{background:#2196F3;color:white;}
+.funko-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:15px;}
+.funko-title{font-size:1.2em;font-weight:bold;color:#333;flex:1;}
+.funko-number{background:#1e90ff;color:white;padding:4px 8px;border-radius:20px;font-size:0.8em;font-weight:bold;}
+.funko-detail{display:flex;justify-content:space-between;margin-bottom:8px;font-size:0.9em;}
+.detail-label{color:#666;font-weight:500;}
+.detail-value{font-weight:bold;}
+.price-positive{color:#4CAF50;}
+.price-negative{color:#f44336;}
+.funko-actions{display:flex;gap:8px;flex-wrap:wrap;}
+.btn-small{padding:6px 12px;font-size:0.8em;border-radius:6px;}
+/* Modal */
+.modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:1000;align-items:center;justify-content:center;}
+.modal-content{background:white;padding:20px;border-radius:10px;width:300px;}
+.modal-content h3{margin-bottom:15px;}
+.modal-content label{display:block;margin-top:10px;font-size:0.9em;}
+.modal-content input, .modal-content select{width:100%;margin-top:5px;padding:8px;}
+.modal-actions{margin-top:15px;text-align:right;}
+@media(max-width:768px){
+    .controls{flex-direction:column;align-items:stretch;}
+    .filter-group{flex-wrap:wrap;}
+    .funko-grid{grid-template-columns:1fr;}
+    .stats-bar{flex-direction:column;text-align:center;}
+}
+</style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>🏴‍☠️ One Piece Funko Pop Tracker</h1>
+        <p>Collezione precaricata di Funko Pop di One Piece</p>
+    </div>
+
+    <div class="stats-bar">
+        <div class="stat-item"><div class="stat-number" id="totalOwned">0</div><div class="stat-label">Posseduti</div></div>
+        <div class="stat-item"><div class="stat-number" id="totalWanted">0</div><div class="stat-label">Desiderati</div></div>
+        <div class="stat-item"><div class="stat-number" id="totalValue">€0</div><div class="stat-label">Valore Totale</div></div>
+        <div class="stat-item"><div class="stat-number" id="totalSpent">€0</div><div class="stat-label">Speso Totale</div></div>
+        <div class="stat-item"><div class="stat-number" id="wantedValue">€0</div><div class="stat-label">Valore Desiderati</div></div>
+        <div class="stat-item"><div class="stat-number" id="profitLoss">€0</div><div class="stat-label">Profitto/Perdita</div></div>
+    </div>
+
+    <div class="controls">
+        <button class="btn btn-secondary" onclick="exportData()">📁 Esporta Dati</button>
+        <div class="filter-group">
+            <select id="statusFilter" onchange="filterFunkos()">
+                <option value="all">Tutti</option>
+                <option value="owned">Posseduti</option>
+                <option value="wanted">Desiderati</option>
+            </select>
+            <input type="text" id="searchInput" placeholder="Cerca per nome..." oninput="filterFunkos()">
+        </div>
+    </div>
+
+    <div class="funko-grid" id="funkoGrid"></div>
+</div>
+
+<!-- Modale semplice -->
+<div class="modal" id="editModal">
+    <div class="modal-content">
+        <h3>Modifica Funko</h3>
+        <label>Stato</label>
+        <select id="editStatus">
+            <option value="owned">Posseduto</option>
+            <option value="wanted">Desiderato</option>
+        </select>
+        <label>Prezzo Pagato (€)</label>
+        <input type="number" id="editPurchase" step="0.01" min="0">
+        <label>Valore Attuale (€)</label>
+        <input type="number" id="editValue" step="0.01" min="0">
+        <div class="modal-actions">
+            <button onclick="closeModal()">Annulla</button>
+            <button onclick="saveEdit()">Salva</button>
+        </div>
+    </div>
+</div>
+
+<script src="onepiece-data.html"></script>
+<script>
+let funkos = [];
+let currentEditId = null;
+
+document.addEventListener('DOMContentLoaded', () => {
+    const saved = JSON.parse(localStorage.getItem('onePieceFunkos'));
+    if (!saved || saved.length === 0) {
+        funkos = onePieceFunkosPreload;
+        saveData();
+    } else {
+        funkos = saved;
+    }
+    updateStats();
+    renderFunkos();
+});
+
+function saveData(){
+    localStorage.setItem('onePieceFunkos', JSON.stringify(funkos));
+}
+
+function exportData(){
+    const dataStr = JSON.stringify(funkos,null,2);
+    const blob = new Blob([dataStr], {type:"application/json"});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = "one-piece-funkos.json";
+    a.click();
+    URL.revokeObjectURL(url);
+}
+
+function updateStats(){
+    const owned = funkos.filter(f=>f.status==="owned");
+    const wanted = funkos.filter(f=>f.status==="wanted");
+    const totalValue = owned.reduce((s,f)=>s+(f.currentValue||0),0);
+    const totalSpent = owned.reduce((s,f)=>s+(f.purchasePrice||0),0);
+    const wantedValue = wanted.reduce((s,f)=>s+(f.currentValue||0),0);
+    const profitLoss = totalValue - totalSpent;
+    document.getElementById('totalOwned').textContent = owned.length;
+    document.getElementById('totalWanted').textContent = wanted.length;
+    document.getElementById('totalValue').textContent = `€${totalValue.toFixed(2)}`;
+    document.getElementById('totalSpent').textContent = `€${totalSpent.toFixed(2)}`;
+    document.getElementById('wantedValue').textContent = `€${wantedValue.toFixed(2)}`;
+    const plElem = document.getElementById('profitLoss');
+    plElem.textContent = `€${profitLoss.toFixed(2)}`;
+    plElem.className = 'stat-number ' + (profitLoss>=0?'price-positive':'price-negative');
+}
+
+function renderFunkos(){
+    const grid = document.getElementById('funkoGrid');
+    const filtered = getFilteredFunkos();
+    if (filtered.length===0){
+        grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:#666;">Nessun Funko trovato</div>';
+        return;
+    }
+    grid.innerHTML = filtered.map(funko=>{
+        const profitLoss = funko.status==="owned" && funko.purchasePrice ? funko.currentValue - funko.purchasePrice : 0;
+        return `
+        <div class="funko-card ${funko.status}">
+            <div class="funko-image"><img src="${funko.image}" alt="${funko.name}" onerror="this.parentElement.innerHTML='📷'"></div>
+            <div class="funko-header">
+                <div class="funko-title">${funko.name}</div>
+                <div class="funko-number">#${funko.number}</div>
+            </div>
+            <div class="status-badge status-${funko.status}">${funko.status==="owned"?'✅ Posseduto':'⭐ Desiderato'}</div>
+            <div class="funko-detail"><span class="detail-label">Serie:</span><span class="detail-value">${funko.series}</span></div>
+            ${funko.status==="owned" && funko.purchasePrice?`<div class="funko-detail"><span class="detail-label">Prezzo Pagato:</span><span class="detail-value">€${funko.purchasePrice.toFixed(2)}</span></div>`:""}
+            <div class="funko-detail"><span class="detail-label">${funko.status==="owned"?"Valore Attuale:":"Prezzo Minimo:"}</span><span class="detail-value">€${funko.currentValue.toFixed(2)}</span></div>
+            ${funko.status==="owned" && funko.purchasePrice?`<div class="funko-detail"><span class="detail-label">Profitto/Perdita:</span><span class="detail-value ${profitLoss>=0?'price-positive':'price-negative'}">€${profitLoss.toFixed(2)}</span></div>`:""}
+            <div class="funko-actions">
+                <button class="btn btn-secondary btn-small" onclick="openModal('${funko.id}')">✏️ Modifica</button>
+            </div>
+        </div>`;
+    }).join('');
+}
+
+function getFilteredFunkos(){
+    const status = document.getElementById('statusFilter').value;
+    const search = document.getElementById('searchInput').value.toLowerCase();
+    return funkos.filter(f=>{
+        const matchStatus = status==="all" || f.status===status;
+        const matchSearch = f.name.toLowerCase().includes(search) || f.number.toLowerCase().includes(search);
+        return matchStatus && matchSearch;
+    });
+}
+
+function filterFunkos(){
+    renderFunkos();
+}
+
+/* Modal */
+function openModal(id){
+    currentEditId = id;
+    const funko = funkos.find(f=>f.id===id);
+    if (!funko) return;
+    document.getElementById('editStatus').value = funko.status;
+    document.getElementById('editPurchase').value = funko.purchasePrice || '';
+    document.getElementById('editValue').value = funko.currentValue || '';
+    document.getElementById('editModal').style.display = 'flex';
+}
+
+function closeModal(){
+    document.getElementById('editModal').style.display = 'none';
+}
+
+function saveEdit(){
+    const funko = funkos.find(f=>f.id===currentEditId);
+    if (!funko) return;
+    funko.status = document.getElementById('editStatus').value;
+    funko.purchasePrice = funko.status==="owned" ? parseFloat(document.getElementById('editPurchase').value) || 0 : null;
+    funko.currentValue = parseFloat(document.getElementById('editValue').value) || 0;
+    saveData();
+    updateStats();
+    renderFunkos();
+    closeModal();
+}
+</script>
+</body>
+</html>

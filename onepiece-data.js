@@ -1,4 +1,3 @@
-<script>
 const onePieceFunkosPreload = [
     {
         id: "1", name: "Monkey D. Luffy", number: "98", series: "One Piece",
@@ -13,4 +12,3 @@ const onePieceFunkosPreload = [
         interestLevel: 0, priceHistory: []
     }
 ];
-</script>
